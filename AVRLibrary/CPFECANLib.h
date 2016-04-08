@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <avr/pgmspace.h>
 #include <avr/interrupt.h>
+#include <avr/io.h>
 #include "arduino/Arduino.h"
 
 #define BIT0 0x01
@@ -134,6 +135,7 @@ public:
    }
    static void sendMsgUsingMOB(uint8_t n, MSG *msg) {
       setMOB(n);
+      Serial.printf("%X\n", CANSTMOB);
       setID(msg->ide, msg->identifier);
       CANCDMOB = (msg->dlc & 0x0F);
       CANIDT4 |= (msg->rtr && 1) << RTRTAG;
@@ -201,7 +203,9 @@ public:
             + (CANIDT3 << 5) + (CANIDT4 >> 3);
       }
 
-      rxIntFunc(&msg, CANPAGE);
+      if (rxIntFunc) {
+    	  rxIntFunc(&msg, CANPAGE);
+      }
    }
 
 private:
