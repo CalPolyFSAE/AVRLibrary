@@ -208,6 +208,15 @@ public:
       }
    }
 
+   inline static uint16_t hton_uint16_t(uint16_t n) {
+	   uint8_t* p_n = (uint8_t *)&n;
+	   uint8_t lower = p_n[0];
+	   p_n[0] = p_n[1];
+	   p_n[1] = lower;
+
+	   return n;
+   }
+
 private:
    static void setMOB(uint8_t MOB) {
       CANPAGE = MOB << 4;
