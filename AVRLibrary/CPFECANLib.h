@@ -135,7 +135,6 @@ public:
    }
    static void sendMsgUsingMOB(uint8_t n, MSG *msg) {
       setMOB(n);
-      Serial.printf("%X\n", CANSTMOB);
       setID(msg->ide, msg->identifier);
       CANCDMOB = (msg->dlc & 0x0F);
       CANIDT4 |= (msg->rtr && 1) << RTRTAG;
