@@ -46,7 +46,7 @@ void Initialize_SPI_Master(uint8_t CS) //correct values for each register still 
 			(1 << MSTR) | 			//master
 			(0 << CPOL) | 			//clock idles low
 			(0 << CPHA) | 			//sample leading edge
-			(0 << SPR1) | (0 << SPR0); //clock speed
+			(1 << SPR0) | (0 << SPR1); //clock speed at 1/16 == 1MHz
 	SPSR = (0 << SPIF) | 		//SPI interrupt flag
 			(0 << WCOL) | 			//Write collision flag
 			(0 << SPI2X); 			//Doubles SPI clock
