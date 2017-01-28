@@ -487,7 +487,7 @@ void canlib::set_baudrate(unsigned short baud)
 //!
 //! @warning The CAN macro will be enable after seen on CAN bus a receceive
 //!          level as long as of an inter frame (hardware feature).
-//!
+// !
 //! @param  Mode (for "can_fixed_baudrate" param not used)
 //!         ==0: start CAN bit timing evaluation from faster baudrate
 //!         ==1: start CAN bit timing evaluation with CANBTx registers
@@ -565,25 +565,25 @@ unsigned char canlib::cmd(st_cmd_t* cmd)
       {
         //------------      
         case CMD_TX:    
-          if (cmd->ctrl.ide){ Can_set_ext_id(cmd->id.ext);}
-          else              { Can_set_std_id(cmd->id.std);}
-          for (cpt=0;cpt<cmd->dlc;cpt++) CANMSG = *(cmd->pt_data + cpt);
-          if (cmd->ctrl.rtr) Can_set_rtr(); 
-            else Can_clear_rtr();    
-          Can_set_dlc(cmd->dlc);
-          Can_config_tx();
+          if (cmd->ctrl.ide){ Can_set_ext_id(cmd->id.ext);}                 //if using extended can frame, set extended identifier
+          else              { Can_set_std_id(cmd->id.std);}                 //if using standard can frame, set standard identifier
+          for (cpt=0;cpt<cmd->dlc;cpt++) CANMSG = *(cmd->pt_data + cpt);    //for each data byte, set CANMSG to that. every access of CANMSG increments INDX bits, iterating over a FIFO which puts data into MOb. 
+          if (cmd->ctrl.rtr) Can_set_rtr();                                 //if RTR, set RTR
+            else Can_clear_rtr();                                           //if not RTR, clear RTR
+          Can_set_dlc(cmd->dlc);                                            //set number of data bytes
+          Can_config_tx();                                                  //enable transmission
           break;
         //------------      
-        case CMD_TX_DATA:    
-          if (cmd->ctrl.ide){ Can_set_ext_id(cmd->id.ext);}
-          else              { Can_set_std_id(cmd->id.std);}
-          for (cpt=0;cpt<cmd->dlc;cpt++) CANMSG = *(cmd->pt_data + cpt);
+        case CMD_TX_DATA:                                                   //transmit data frame
+          if (cmd->ctrl.ide){ Can_set_ext_id(cmd->id.ext);}                 
+          else              { Can_set_std_id(cmd->id.std);}                 
+          for (cpt=0;cpt<cmd->dlc;cpt++) CANMSG = *(cmd->pt_data + cpt);    
           cmd->ctrl.rtr=0; Can_clear_rtr();
           Can_set_dlc(cmd->dlc);
           Can_config_tx();
           break;
         //------------      
-        case CMD_TX_REMOTE:       
+        case CMD_TX_REMOTE:                                                 //transmit remote frame
           if (cmd->ctrl.ide){ Can_set_ext_id(cmd->id.ext);}
           else              { Can_set_std_id(cmd->id.std);}
           cmd->ctrl.rtr=1; Can_set_rtr();
